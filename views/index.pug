@@ -12,14 +12,18 @@ html
         tr
           th ID
           th Time
+          th To
+          th Subject
           th
           th
       tbody
-        each message, index in messages
+        each message in messages
           tr
-            td= index
-            td= message.Timestamp
+            td= message.id
+            td= message.timestamp
+            td= message.to
+            td= message.subject
             td
-              a(href='/emails/' + index) View
+              a(href='/emails/' + message.id) View
             td
-              a(href='/emails/' + index + '/download') Download
+              a(href='/emails/' + message.id + '/download') Download

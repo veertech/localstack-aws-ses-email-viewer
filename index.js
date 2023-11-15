@@ -12,7 +12,18 @@ app.set("view engine", "pug");
 app.get("/", async (req, res, next) => {
   try {
     const messages = await fetchMessages();
-    res.render("index", { messages });
+    const messagesForTemplate = await Promise.all(
+      messages.map(async (message, index) => {
+        const parsed = await simpleParser(message.RawData);
+        return {
+          id: index,
+          timestamp: message.Timestamp,
+          subject: parsed.subject,
+          to: parsed.to.text
+        };
+      })
+    );
+    res.render("index", { messages: messagesForTemplate.reverse() });
   } catch (err) {
     next(err);
   }
