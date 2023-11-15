@@ -1,0 +1,72 @@
+const express = require("express");
+const fetch = require("node-fetch");
+const simpleParser = require("mailparser").simpleParser;
+
+const app = express();
+const port = 3005;
+
+const apiUrl = "http://localstack:4566/_aws/ses";
+
+app.set("view engine", "pug");
+
+app.get("/", async (req, res, next) => {
+  try {
+    const messages = await fetchMessages();
+    res.render("index", { messages });
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get("/emails/latest", async (req, res, next) => {
+  try {
+    const messages = await fetchMessages();
+    const email = messages[messages.length - 1];
+
+    let parsed = await simpleParser(email.RawData);
+
+    res.send(parsed["html"]);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get("/emails/:id", async (req, res, next) => {
+  try {
+    const messages = await fetchMessages();
+    const email = messages[req.params.id];
+
+    let parsed = await simpleParser(email.RawData);
+
+    res.send(parsed["html"]);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get("/emails/:id/download", async (req, res, next) => {
+  try {
+    const messages = await fetchMessages();
+    const email = messages[req.params.id];
+
+    res.set({ "Content-Disposition": 'attachment; filename="email.eml"' });
+    res.send(email.RawData);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
+});
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Something broke!");
+});
+
+async function fetchMessages() {
+  const response = await fetch(apiUrl);
+  const data = await response.json();
+  return data["messages"];
+}

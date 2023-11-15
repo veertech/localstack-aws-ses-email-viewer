@@ -1,0 +1,25 @@
+doctype html
+html
+  head
+    title Message Table
+  style(type="text/css").
+    td {
+      padding: 0 15px;
+    }
+  body
+    table
+      thead
+        tr
+          th ID
+          th Time
+          th
+          th
+      tbody
+        each message, index in messages
+          tr
+            td= index
+            td= message.Timestamp
+            td
+              a(href='/emails/' + index) View
+            td
+              a(href='/emails/' + index + '/download') Download
