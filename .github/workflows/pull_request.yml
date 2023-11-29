@@ -1,0 +1,17 @@
+on: pull_request
+name: on pull request
+concurrency:
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
+jobs:
+  pull_request_chk:
+    name: pull request checker
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
+        with:
+          node-version: 18.18
+      - run: npm ci
+      - run: CI=1 npm test
