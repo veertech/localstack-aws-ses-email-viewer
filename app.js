@@ -1,6 +1,8 @@
-const express = require("express");
-const fetch = require("node-fetch");
-const simpleParser = require("mailparser").simpleParser;
+import express from "express";
+import fetch from "node-fetch";
+import mailparser from "mailparser";
+
+const simpleParser = mailparser.simpleParser;
 
 const app = express();
 
@@ -18,9 +20,9 @@ app.get("/", async (req, res, next) => {
           id: index,
           timestamp: message.Timestamp,
           subject: parsed.subject,
-          to: parsed.to.text
+          to: parsed.to.text,
         };
-      })
+      }),
     );
     res.render("index", { messages: messagesForTemplate.reverse() });
   } catch (err) {
@@ -77,4 +79,4 @@ async function fetchMessages() {
   return data["messages"];
 }
 
-module.exports = { app };
+export default app;
