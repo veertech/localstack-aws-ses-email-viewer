@@ -14,4 +14,4 @@ jobs:
         with:
           node-version: 18.18
       - run: npm ci
-      - run: CI=1 npm test
+      - run: NODE_OPTIONS=--experimental-vm-modules CI=1 npm test

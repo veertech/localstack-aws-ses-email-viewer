@@ -1,6 +1,6 @@
-const supertest = require("supertest");
-const nock = require("nock");
-const { app } = require("../app");
+import supertest from "supertest";
+import nock from "nock";
+import app from "../app.js";
 
 const generateMockEml = () => {
   const timestamp = new Date().toUTCString();
@@ -15,13 +15,13 @@ describe("App Tests", () => {
         messages: [
           {
             Timestamp: Date.now(),
-            RawData: generateMockEml()
+            RawData: generateMockEml(),
           },
           {
             Timestamp: Date.now(),
-            RawData: generateMockEml()
-          }
-        ]
+            RawData: generateMockEml(),
+          },
+        ],
       });
   });
 
@@ -48,6 +48,8 @@ describe("App Tests", () => {
   test("GET /emails/:id/download should return status 200 and download the email as a file", async () => {
     const response = await supertest(app).get("/emails/0/download");
     expect(response.status).toBe(200);
-    expect(response.header["content-disposition"]).toBe('attachment; filename="email.eml"');
+    expect(response.header["content-disposition"]).toBe(
+      'attachment; filename="email.eml"',
+    );
   });
 });
