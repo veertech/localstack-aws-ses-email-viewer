@@ -3,7 +3,6 @@ const fetch = require("node-fetch");
 const simpleParser = require("mailparser").simpleParser;
 
 const app = express();
-const port = 3005;
 
 const apiUrl = "http://localstack:4566/_aws/ses";
 
@@ -67,10 +66,6 @@ app.get("/emails/:id/download", async (req, res, next) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
-});
-
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send("Something broke!");
@@ -81,3 +76,5 @@ async function fetchMessages() {
   const data = await response.json();
   return data["messages"];
 }
+
+module.exports = { app };

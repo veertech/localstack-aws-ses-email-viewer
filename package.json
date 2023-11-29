@@ -4,5 +4,13 @@
     "mailparser": "^3.6.5",
     "node-fetch": "^2.7.0",
     "pug": "^3.0.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nock": "^13.4.0",
+    "supertest": "^6.3.3"
+  },
+  "scripts": {
+    "test": "jest"
   }
 }
