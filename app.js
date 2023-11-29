@@ -3,7 +3,6 @@ const fetch = require("node-fetch");
 const simpleParser = require("mailparser").simpleParser;
 
 const app = express();
-const port = 3005;
 
 const apiUrl = "http://localstack:4566/_aws/ses";
 
