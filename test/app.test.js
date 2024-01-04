@@ -49,7 +49,7 @@ describe("App Tests", () => {
     const response = await supertest(app).get("/emails/0/download");
     expect(response.status).toBe(200);
     expect(response.header["content-disposition"]).toBe(
-      'attachment; filename="email.eml"',
+      'attachment; filename="Test Email.eml"',
     );
   });
 });

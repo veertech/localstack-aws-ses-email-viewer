@@ -48,9 +48,13 @@ app.get("/emails/:id", async (req, res, next) => {
     const messages = await fetchMessages();
     const email = messages[req.params.id];
 
-    let parsed = await simpleParser(email.RawData);
+    const parsed = await simpleParser(email.RawData);
 
-    res.send(parsed["html"]);
+    res.render("email", {
+      subject: parsed.subject,
+      to: parsed.to.text,
+      htmlContent: parsed.html,
+    });
   } catch (err) {
     next(err);
   }
@@ -61,7 +65,9 @@ app.get("/emails/:id/download", async (req, res, next) => {
     const messages = await fetchMessages();
     const email = messages[req.params.id];
 
-    res.set({ "Content-Disposition": 'attachment; filename="email.eml"' });
+    const parsed = await simpleParser(email.RawData);
+
+    res.set({ "Content-Disposition": `attachment; filename="${parsed.subject}.eml"` });
     res.send(email.RawData);
   } catch (err) {
     next(err);
