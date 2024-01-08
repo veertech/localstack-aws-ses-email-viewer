@@ -16,11 +16,13 @@ app.get("/", async (req, res, next) => {
     const messagesForTemplate = await Promise.all(
       messages.map(async (message, index) => {
         const parsed = await simpleParser(message.RawData);
+        const logo = parsed.attachments.find((attachment) => attachment.filename === "default-logo.png");
         return {
           id: index,
           timestamp: message.Timestamp,
           subject: parsed.subject,
           to: parsed.to.text,
+          logo: logo ? logo.content : null,
         };
       }),
     );
