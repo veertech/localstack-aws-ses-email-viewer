@@ -29,7 +29,7 @@ describe("App Tests", () => {
     nock.cleanAll();
   });
 
-  describe("with EXTRA_COLUMNS", function () {
+  describe("with EXTRA_COLUMNS", () => {
     beforeEach(() => {
       process.env.EXTRA_COLUMNS = "Customer=default-logo.png";
     });
