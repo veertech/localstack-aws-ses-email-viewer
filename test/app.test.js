@@ -29,6 +29,22 @@ describe("App Tests", () => {
     nock.cleanAll();
   });
 
+  describe('Conditional Column Tests', function() {
+    // Set the environment variable value for the conditional column
+    beforeEach(function() {
+      process.env.BASE64_COLUMNS = "Customer=default-logo.png"
+    });
+  
+    test('should render the index page with extra column and logos when GET / is called', async function() {
+        const response = await supertest(app).get("/");
+        expect(response.status).toBe(200);
+        expect(response.type).toBe('text/html');
+        expect(response.text).toMatch(/Subject/);
+        expect(response.text).toMatch(/To/);
+        expect(response.text).toMatch(/Customer/);
+      });
+    });
+
   test("GET / should return status 200 and render index page", async () => {
     const response = await supertest(app).get("/");
     expect(response.status).toBe(200);

@@ -59,7 +59,8 @@ html
             each logo in message.logos
               td
                 div.logo
-                  img(src=`data:image/png;base64,${logo.toString('base64')}`, height="24px", alt="Logo")
+                  if logo
+                    img(src=`data:image/png;base64,${logo.toString('base64')}`, height="24px", alt="Logo")
             td= message.to
             td= message.subject
             td
