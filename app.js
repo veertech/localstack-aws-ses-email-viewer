@@ -10,29 +10,35 @@ const apiUrl = "http://localstack:4566/_aws/ses";
 
 app.set("view engine", "pug");
 
-app.get("/", async (req, res, next) => {
+app.get("/", async (_req, res, next) => {
   try {
     const messages = await fetchMessages();
+    const extraColumns = parseExtraColumns() || [];
     const messagesForTemplate = await Promise.all(
       messages.map(async (message, index) => {
         const parsed = await simpleParser(message.RawData);
-        const logo = parsed.attachments.find((attachment) => attachment.filename === "default-logo.png");
+        const logos = extraColumns.map((column) => (
+          parsed.attachments.find((attachment) => attachment.filename === column.filename)?.content
+        ))
         return {
           id: index,
           timestamp: message.Timestamp,
           subject: parsed.subject,
           to: parsed.to.text,
-          logo: logo ? logo.content : null,
+          logos
         };
       }),
     );
-    res.render("index", { messages: messagesForTemplate.reverse() });
+    res.render("index", {
+      extraColumns,
+      messages: messagesForTemplate.reverse()
+    });
   } catch (err) {
     next(err);
   }
 });
 
-app.get("/emails/latest", async (req, res, next) => {
+app.get("/emails/latest", async (_req, res, next) => {
   try {
     const messages = await fetchMessages();
     const email = messages[messages.length - 1];
@@ -76,7 +82,7 @@ app.get("/emails/:id/download", async (req, res, next) => {
   }
 });
 
-app.use((err, req, res, next) => {
+app.use((err, _req, res, _next) => {
   console.error(err.stack);
   res.status(500).send("Something broke!");
 });
@@ -85,6 +91,13 @@ async function fetchMessages() {
   const response = await fetch(apiUrl);
   const data = await response.json();
   return data["messages"];
+}
+
+function parseExtraColumns() {
+  return process.env.BASE64_COLUMNS?.split(',').map((value) => {
+    const [name, filename] = value.split('=');
+    return { name, filename };
+  })
 }
 
 export default app;
