@@ -29,10 +29,10 @@ describe("App Tests", () => {
     nock.cleanAll();
   });
 
-  describe('Conditional Column Tests', function() {
+  describe('with EXTRA_COLUMNS', function() {
     // Set the environment variable value for the conditional column
     beforeEach(function() {
-      process.env.BASE64_COLUMNS = "Customer=default-logo.png"
+      process.env.EXTRA_COLUMNS = "Customer=default-logo.png"
     });
   
     test('should render the index page with extra column and logos when GET / is called', async function() {

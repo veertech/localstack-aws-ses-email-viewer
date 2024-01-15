@@ -17,21 +17,24 @@ app.get("/", async (_req, res, next) => {
     const messagesForTemplate = await Promise.all(
       messages.map(async (message, index) => {
         const parsed = await simpleParser(message.RawData);
-        const logos = extraColumns.map((column) => (
-          parsed.attachments.find((attachment) => attachment.filename === column.filename)?.content
-        ))
+        const logos = extraColumns.map(
+          (column) =>
+            parsed.attachments.find(
+              (attachment) => attachment.filename === column.value,
+            )?.content,
+        );
         return {
           id: index,
           timestamp: message.Timestamp,
           subject: parsed.subject,
           to: parsed.to.text,
-          logos
+          logos,
         };
       }),
     );
     res.render("index", {
       extraColumns,
-      messages: messagesForTemplate.reverse()
+      messages: messagesForTemplate.reverse(),
     });
   } catch (err) {
     next(err);
@@ -75,7 +78,9 @@ app.get("/emails/:id/download", async (req, res, next) => {
 
     const parsed = await simpleParser(email.RawData);
 
-    res.set({ "Content-Disposition": `attachment; filename="${parsed.subject}.eml"` });
+    res.set({
+      "Content-Disposition": `attachment; filename="${parsed.subject}.eml"`,
+    });
     res.send(email.RawData);
   } catch (err) {
     next(err);
@@ -94,10 +99,10 @@ async function fetchMessages() {
 }
 
 function parseExtraColumns() {
-  return process.env.BASE64_COLUMNS?.split(',').map((value) => {
-    const [name, filename] = value.split('=');
-    return { name, filename };
-  })
+  return process.env.EXTRA_COLUMNS?.split(",").map((column) => {
+    const [name, value] = column.split("=");
+    return { name, value };
+  });
 }
 
 export default app;
