@@ -9,7 +9,7 @@
   "devDependencies": {
     "jest": "^29.7.0",
     "nock": "^13.4.0",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.4"
   },
   "scripts": {
     "test": "jest"
