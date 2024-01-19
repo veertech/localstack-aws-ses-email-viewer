@@ -2,16 +2,51 @@ doctype html
 html
   head
     title Message table
+
   style(type="text/css").
-    td {
-      padding: 0 15px;
+    table {
+      border-spacing: 0;
+      font-family: arial;
+      font-size: 14px;
     }
+    td {
+      padding: 2px 15px;
+    }
+    td:first-child {
+      border-radius: 6px 0 0 6px;
+    }
+    td:last-child {
+      border-radius: 0 6px 6px 0;
+    }
+    th {
+      border-bottom: 1px solid #ddd;
+      position: sticky;
+      top: 0px;
+      background: white;
+    }
+    tbody tr:hover {
+      background-color: #e3e6e8;
+    }
+    thead {
+      height: 24px;
+    }
+    td .logo {
+      height: 24px;
+      width: 60px;
+      overflow: hidden;
+    }
+    td .logo img {
+      margin: 0px 0px 0px -62px;
+    }
+
   body
     table
       thead
         tr
           th ID
           th Time
+          each column in extraColumns
+            th= column.name
           th To
           th Subject
           th
@@ -21,6 +56,11 @@ html
           tr
             td= message.id
             td= message.timestamp
+            each logo in message.logos
+              td
+                div.logo
+                  if logo
+                    img(src=`data:image/png;base64,${logo.toString('base64')}`, height="24px", alt="Logo")
             td= message.to
             td= message.subject
             td

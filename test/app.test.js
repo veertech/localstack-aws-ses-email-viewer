@@ -29,6 +29,25 @@ describe("App Tests", () => {
     nock.cleanAll();
   });
 
+  describe("with EXTRA_COLUMNS", () => {
+    beforeEach(() => {
+      process.env.EXTRA_COLUMNS = "Customer=default-logo.png";
+    });
+
+    afterEach(() => {
+      process.env.EXTRA_COLUMNS = null;
+    });
+
+    test("should render the index page with extra column and logos when GET / is called", async () => {
+      const response = await supertest(app).get("/");
+      expect(response.status).toBe(200);
+      expect(response.type).toBe("text/html");
+      expect(response.text).toMatch(/Subject/);
+      expect(response.text).toMatch(/To/);
+      expect(response.text).toMatch(/Customer/);
+    });
+  });
+
   test("GET / should return status 200 and render index page", async () => {
     const response = await supertest(app).get("/");
     expect(response.status).toBe(200);
