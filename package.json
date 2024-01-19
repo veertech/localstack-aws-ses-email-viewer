@@ -8,9 +8,9 @@
   },
   "devDependencies": {
     "jest": "^29.7.0",
-    "nock": "^13.4.0",
+    "nock": "^13.5.0",
     "prettier": "^3.2.2",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.4"
   },
   "scripts": {
     "test": "jest"
