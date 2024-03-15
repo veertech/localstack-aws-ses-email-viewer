@@ -21,6 +21,11 @@ describe("App Tests", () => {
             Timestamp: Date.now(),
             RawData: generateMockEml(),
           },
+          {
+            Timestamp: Date.now(),
+            Subject: "Test email",
+            RawData: null,
+          },
         ],
       });
   });
