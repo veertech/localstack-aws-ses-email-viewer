@@ -95,7 +95,7 @@ app.use((err, _req, res, _next) => {
 async function fetchMessages() {
   const response = await fetch(apiUrl);
   const data = await response.json();
-  return data["messages"];
+  return data["messages"].filter(x => x.RawData);
 }
 
 function parseExtraColumns() {
