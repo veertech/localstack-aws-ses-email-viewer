@@ -65,5 +65,6 @@ html
             td= message.subject
             td
               a(href='/emails/' + message.id) View
-            td
-              a(href='/emails/' + message.id + '/download') Download
+            if message.isDownloadable
+              td
+                a(href='/emails/' + message.id + '/download') Download

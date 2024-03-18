@@ -16,20 +16,17 @@ app.get("/", async (_req, res, next) => {
     const extraColumns = parseExtraColumns() || [];
     const messagesForTemplate = await Promise.all(
       messages.map(async (message, index) => {
-        const parsed = await simpleParser(message.RawData);
+        let result = await createEmail(message, index);
         const logos = extraColumns.map(
           (column) =>
             parsed.attachments.find(
               (attachment) => attachment.filename === column.value,
             )?.content,
         );
-        return {
-          id: index,
-          timestamp: message.Timestamp,
-          subject: parsed.subject,
-          to: parsed.to.text,
-          logos,
-        };
+
+        result.id = index;
+        result.logos = logos;
+        return result;
       }),
     );
     res.render("index", {
@@ -44,11 +41,11 @@ app.get("/", async (_req, res, next) => {
 app.get("/emails/latest", async (_req, res, next) => {
   try {
     const messages = await fetchMessages();
-    const email = messages[messages.length - 1];
+    const message = messages[messages.length - 1];
 
-    let parsed = await simpleParser(email.RawData);
+    const email = await createEmail(message);
 
-    res.send(parsed["html"]);
+    res.send(email.html);
   } catch (err) {
     next(err);
   }
@@ -57,14 +54,14 @@ app.get("/emails/latest", async (_req, res, next) => {
 app.get("/emails/:id", async (req, res, next) => {
   try {
     const messages = await fetchMessages();
-    const email = messages[req.params.id];
+    const message = messages[req.params.id];
 
-    const parsed = await simpleParser(email.RawData);
+    const email = await createEmail(message);
 
     res.render("email", {
-      subject: parsed.subject,
-      to: parsed.to.text,
-      htmlContent: parsed.html,
+      subject: email.subject,
+      to: email.to,
+      htmlContent: email.html,
     });
   } catch (err) {
     next(err);
@@ -74,14 +71,19 @@ app.get("/emails/:id", async (req, res, next) => {
 app.get("/emails/:id/download", async (req, res, next) => {
   try {
     const messages = await fetchMessages();
-    const email = messages[req.params.id];
+    const message = messages[req.params.id];
 
-    const parsed = await simpleParser(email.RawData);
+    if (!message.RawData) {
+      res.status(400).send("Can't download emails without RawData!")
+      return;
+    }
+
+    const parsed = await simpleParser(message.RawData);
 
     res.set({
       "Content-Disposition": `attachment; filename="${parsed.subject}.eml"`,
     });
-    res.send(email.RawData);
+    res.send(message.RawData);
   } catch (err) {
     next(err);
   }
@@ -96,6 +98,27 @@ async function fetchMessages() {
   const response = await fetch(apiUrl);
   const data = await response.json();
   return data["messages"];
+}
+
+async function createEmail(message) {
+  if (message.RawData) {
+    const parsed = await simpleParser(message.RawData);
+    return {
+      timestamp: message.Timestamp,
+      subject: parsed.subject,
+      to: parsed.to.text,
+      html: parsed.html,
+      isDownloadable: true,
+    };
+  } else {
+    return {
+      timestamp: message.Timestamp,
+      subject: message.Subject,
+      to: message.Destination.ToAddresses,
+      html: message.Body.html_part ?? message.Body.text_part,
+      isDownloadable: false,
+    };
+  }
 }
 
 function parseExtraColumns() {
