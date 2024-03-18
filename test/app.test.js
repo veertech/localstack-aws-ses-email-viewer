@@ -21,6 +21,28 @@ describe("App Tests", () => {
             Timestamp: Date.now(),
             RawData: generateMockEml(),
           },
+          {
+            Timestamp: Date.now(),
+            Subject: "Test email",
+            Destination: {
+              ToAddresses: ["jeff@aws.com", "adam@aws.com"]
+            },
+            Body: {
+              text_part: null,
+              html_part: "<html>This is a test email with html</html>",
+            },
+          },
+          {
+            Timestamp: Date.now(),
+            Subject: "Test email",
+            Destination: {
+              ToAddresses: ["jeff@aws.com"]
+            },
+            Body: {
+              text_part: "This is a test email",
+              html_part: null,
+            },
+          },
         ],
       });
   });
@@ -70,5 +92,10 @@ describe("App Tests", () => {
     expect(response.header["content-disposition"]).toBe(
       'attachment; filename="Test Email.eml"',
     );
+  });
+
+  test("GET /emails/:id/download should return status 400 when the email does not contain raw data", async () => {
+    const response = await supertest(app).get("/emails/2/download");
+    expect(response.status).toBe(400);
   });
 });
