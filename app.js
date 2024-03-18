@@ -19,7 +19,7 @@ app.get("/", async (_req, res, next) => {
         let email = await createEmail(message, index);
         const logos = extraColumns.map(
           (column) =>
-            parsed.attachments.find(
+            email.attachments.find(
               (attachment) => attachment.filename === column.value,
             )?.content,
         );
@@ -108,17 +108,19 @@ async function createEmail(message) {
       subject: parsed.subject,
       to: parsed.to.text,
       html: parsed.html,
+      attachments: parsed.attachments,
       isDownloadable: true,
     };
-  } else {
-    return {
-      timestamp: message.Timestamp,
-      subject: message.Subject,
-      to: message.Destination.ToAddresses,
-      html: message.Body.html_part ?? message.Body.text_part,
-      isDownloadable: false,
-    };
   }
+
+  return {
+    timestamp: message.Timestamp,
+    subject: message.Subject,
+    to: message.Destination.ToAddresses,
+    html: message.Body.html_part ?? message.Body.text_part,
+    attachments: [],
+    isDownloadable: false,
+  };
 }
 
 function parseExtraColumns() {
