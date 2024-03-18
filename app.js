@@ -16,7 +16,7 @@ app.get("/", async (_req, res, next) => {
     const extraColumns = parseExtraColumns() || [];
     const messagesForTemplate = await Promise.all(
       messages.map(async (message, index) => {
-        let result = await createEmail(message, index);
+        let email = await createEmail(message, index);
         const logos = extraColumns.map(
           (column) =>
             parsed.attachments.find(
@@ -24,9 +24,9 @@ app.get("/", async (_req, res, next) => {
             )?.content,
         );
 
-        result.id = index;
-        result.logos = logos;
-        return result;
+        email.id = index;
+        email.logos = logos;
+        return email;
       }),
     );
     res.render("index", {
