@@ -2,7 +2,7 @@
   "type": "module",
   "dependencies": {
     "express": "^4.19.2",
-    "mailparser": "^3.6.9",
+    "mailparser": "^3.7.0",
     "node-fetch": "^3.3.2",
     "pug": "^3.0.2"
   },
