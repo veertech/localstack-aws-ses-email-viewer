@@ -4,7 +4,7 @@
     "express": "^4.19.2",
     "mailparser": "^3.7.1",
     "node-fetch": "^3.3.2",
-    "pug": "^3.0.2"
+    "pug": "^3.0.3"
   },
   "devDependencies": {
     "jest": "^29.7.0",
