@@ -34,7 +34,7 @@ A lightweight web interface to manage emails sent through [LocalStack SES](https
 2. **Build the Application:**
    - run `docker build  . -t ses-viewer`
 3. **Run the Application:**
-   - run `docker run --rm --env LOCALSTACK_HOST=http://localstack:4566   -p 3005:3005 ses-viewer`
+   - run `docker run --rm --env LOCALSTACK_HOST=http://localstack:4566 -p 3005:3005 ses-viewer`
 4. **Access the Interface:**
    - Open [http://localhost:3005](http://localhost:3005) in your web browser.
 
