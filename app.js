@@ -6,7 +6,7 @@ const simpleParser = mailparser.simpleParser;
 
 const app = express();
 
-const apiUrl = "http://localstack:4566/_aws/ses";
+const apiUrl = `${process.env.LOCALSTACK_HOST ? process.env.LOCALSTACK_HOST  : 'http://localhost:4566'}/_aws/ses`;
 
 app.set("view engine", "pug");
 
