@@ -13,18 +13,23 @@ A lightweight web interface to manage emails sent through [LocalStack SES](https
 - **Download Emails:** Save email contents in EML format for offline access or further analysis.
 
 ## Usage
-
-1. **Clone and Install:**
    - Clone the repository: `git clone https://github.com/veertech/localstack-aws-ses-email-viewer.git`
    - Navigate to the project directory: `cd localstack-aws-ses-email-viewer`
+
+### Run locally
    - Install dependencies: `npm install`
+   - Run: `Run: LOCALSTACK_HOST=http://localhost:4566 PORT=3005 node server.js`
+   - Open http://localhost:3005 in a web browser.
 
-2. **Run the Application:**
-   - Run: `node server.js`
 
-3. **Access the Interface:**
-   - Open [http://localhost:3005](http://localhost:3005) in your web browser.
 
+### Run with docker
+   - Build image: `docker build  . -t ses-viewer`
+   - Run: `docker run --rm --env LOCALSTACK_HOST=http://localstack:4566 -p 3005:3005 ses-viewer`
+   - Open http://localhost:3005 in a web browser.
+
+
+   
 ## Requirements
 
 - [LocalStack](https://github.com/localstack/localstack): Ensure LocalStack, especially the SES service, is set up and running.

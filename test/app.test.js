@@ -9,7 +9,7 @@ const generateMockEml = () => {
 
 describe("App Tests", () => {
   beforeEach(() => {
-    nock("http://localstack:4566")
+    nock(`${process.env.LOCALSTACK_HOST || 'http://localhost:4566'}`)
       .get("/_aws/ses")
       .reply(200, {
         messages: [
