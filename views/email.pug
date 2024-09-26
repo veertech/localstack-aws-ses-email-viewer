@@ -13,14 +13,19 @@ html
       padding: 10px 16px;
       font-weight: normal;
     }
-    
+
     .subject-value {
       font-weight: bold;
     }
   body
     .container
-      | Subject line: 
+      | Subject line:&nbsp
       span.subject-value #{subject} <br>
-      | To: 
-      span.subject-value #{to}
+      | To:&nbsp
+      span.subject-value #{to} <br>
+      if attachments.length > 0
+        | Attachments:&nbsp
+        each att in attachments
+          a(href='/emails/' + messageId + '/attachments/' + att.partId)= att.filename
+          =" "
     | !{htmlContent}
