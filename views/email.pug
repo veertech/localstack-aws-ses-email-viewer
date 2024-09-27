@@ -17,6 +17,11 @@ html
     .subject-value {
       font-weight: bold;
     }
+
+    .attachment-link {
+      color: #fff;
+      font-weight: bold;
+    }
   body
     .container
       | Subject line:&nbsp
@@ -26,6 +31,6 @@ html
       if attachments.length > 0
         | Attachments:&nbsp
         each att in attachments
-          a(href='/emails/' + messageId + '/attachments/' + att.partId)= att.filename
+          a.attachment-link(href='/emails/' + messageId + '/attachments/' + att.partId, target="_blank")= att.filename
           =" "
     | !{htmlContent}
