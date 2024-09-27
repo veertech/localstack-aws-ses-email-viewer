@@ -6,7 +6,7 @@ const simpleParser = mailparser.simpleParser;
 
 const app = express();
 
-const apiUrl = `${process.env.LOCALSTACK_HOST || 'http://localhost:4566'}/_aws/ses`;
+const apiUrl = `${process.env.LOCALSTACK_HOST || "http://localhost:4566"}/_aws/ses`;
 
 app.set("view engine", "pug");
 
@@ -18,20 +18,17 @@ app.get("/", async (_req, res, next) => {
       messages.map(async (message, index) => {
         let email = await createEmail(message, index);
         const logos = extraColumns.map(
-          (column) =>
-            email.attachments.find(
-              (attachment) => attachment.filename === column.value,
-            )?.content,
+          (column) => email.attachments.find((attachment) => attachment.filename === column.value)?.content
         );
 
         email.id = index;
         email.logos = logos;
         return email;
-      }),
+      })
     );
     res.render("index", {
       extraColumns,
-      messages: messagesForTemplate.reverse(),
+      messages: messagesForTemplate.reverse()
     });
   } catch (err) {
     next(err);
@@ -58,10 +55,16 @@ app.get("/emails/:id", async (req, res, next) => {
 
     const email = await createEmail(message);
 
+    const id = +req.params.id;
+    const prevEmailId = id > 0 ? id - 1 : null;
+    const nextEmailId = id < messages.length - 1 ? id + 1 : null;
+
     res.render("email", {
       subject: email.subject,
       to: email.to,
       htmlContent: email.html,
+      prevEmailId,
+      nextEmailId
     });
   } catch (err) {
     next(err);
@@ -74,14 +77,14 @@ app.get("/emails/:id/download", async (req, res, next) => {
     const message = messages[req.params.id];
 
     if (!message.RawData) {
-      res.status(400).send("Can't download emails without RawData!")
+      res.status(400).send("Can't download emails without RawData!");
       return;
     }
 
     const parsed = await simpleParser(message.RawData);
 
     res.set({
-      "Content-Disposition": `attachment; filename="${parsed.subject}.eml"`,
+      "Content-Disposition": `attachment; filename="${parsed.subject}.eml"`
     });
     res.send(message.RawData);
   } catch (err) {
@@ -109,7 +112,7 @@ async function createEmail(message) {
       to: parsed.to.text,
       html: parsed.html,
       attachments: parsed.attachments,
-      isDownloadable: true,
+      isDownloadable: true
     };
   }
 
@@ -119,7 +122,7 @@ async function createEmail(message) {
     to: message.Destination.ToAddresses,
     html: message.Body.html_part ?? message.Body.text_part,
     attachments: [],
-    isDownloadable: false,
+    isDownloadable: false
   };
 }
 
