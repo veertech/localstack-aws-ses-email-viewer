@@ -13,14 +13,32 @@ html
       padding: 10px 16px;
       font-weight: normal;
     }
-    
+
     .subject-value {
       font-weight: bold;
     }
+
+    .prev-button {
+      font-size: 20px;
+      float: left;
+      margin-left: 10px;
+    }
+
+    .next-button {
+      font-size: 20px;
+      float: right;
+      margin-right: 10px;
+    }
   body
+    if prevEmailId !== null
+      .prev-button
+        a(href="/emails/" + prevEmailId) Prev
+    if nextEmailId !== null
+      .next-button
+        a(href="/emails/" + nextEmailId) Next
     .container
-      | Subject line: 
+      | Subject line:
       span.subject-value #{subject} <br>
-      | To: 
+      | To:
       span.subject-value #{to}
     | !{htmlContent}
