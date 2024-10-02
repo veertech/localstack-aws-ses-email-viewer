@@ -4,22 +4,43 @@ import app from "../app.js";
 
 const generateMockEml = () => {
   const timestamp = new Date().toUTCString();
-  return `Date: ${timestamp}\r\nFrom: sender@example.com\r\nTo: recipient@example.com\r\nSubject: Test Email\r\n\r\nThis is the body of the email.`;
+  return `Date: Fri, 27 Sep 2024 00:18:19 +0300
+From: sender@example.com
+To: recipient@example.com
+Subject: Test Email
+Content-Type: multipart/related;
+ boundary=b510f43f668889c35c6ed92270c106a8dc55a157b9add4fffd76983ad5cc
+
+--b510f43f668889c35c6ed92270c106a8dc55a157b9add4fffd76983ad5cc
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+
+email body
+
+--b510f43f668889c35c6ed92270c106a8dc55a157b9add4fffd76983ad5cc
+Content-Disposition: attachment; filename="file.pdf"
+Content-ID: <file.pdf>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: image/pdf; name="file.pdf"
+
+attachment-content
+--b510f43f668889c35c6ed92270c106a8dc55a157b9add4fffd76983ad5cc--
+`;
 };
 
 describe("App Tests", () => {
   beforeEach(() => {
-    nock(`${process.env.LOCALSTACK_HOST || 'http://localhost:4566'}`)
+    nock(`${process.env.LOCALSTACK_HOST || "http://localhost:4566"}`)
       .get("/_aws/ses")
       .reply(200, {
         messages: [
           {
             Timestamp: Date.now(),
-            RawData: generateMockEml(),
+            RawData: generateMockEml()
           },
           {
             Timestamp: Date.now(),
-            RawData: generateMockEml(),
+            RawData: generateMockEml()
           },
           {
             Timestamp: Date.now(),
@@ -29,8 +50,8 @@ describe("App Tests", () => {
             },
             Body: {
               text_part: null,
-              html_part: "<html>This is a test email with html</html>",
-            },
+              html_part: "<html>This is a test email with html</html>"
+            }
           },
           {
             Timestamp: Date.now(),
@@ -39,7 +60,6 @@ describe("App Tests", () => {
               ToAddresses: ["jeff@aws.com"]
             },
             Body: {
-              text_part: "This is a test email",
               html_part: null,
             },
           },
@@ -102,13 +122,16 @@ describe("App Tests", () => {
   test("GET /emails/:id/download should return status 200 and download the email as a file", async () => {
     const response = await supertest(app).get("/emails/0/download");
     expect(response.status).toBe(200);
-    expect(response.header["content-disposition"]).toBe(
-      'attachment; filename="Test Email.eml"',
-    );
+    expect(response.header["content-disposition"]).toBe('attachment; filename="Test Email.eml"');
   });
 
   test("GET /emails/:id/download should return status 400 when the email does not contain raw data", async () => {
     const response = await supertest(app).get("/emails/2/download");
     expect(response.status).toBe(400);
+  });
+
+  test("GET /emails/:id/attachments/:attachmentId should return status 200 and show attachment", async () => {
+    const response = await supertest(app).get("/emails/1/attachments/2");
+    expect(response.status).toBe(200);
   });
 });

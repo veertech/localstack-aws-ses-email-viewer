@@ -55,14 +55,33 @@ app.get("/emails/:id", async (req, res, next) => {
   try {
     const messages = await fetchMessages();
     const message = messages[req.params.id];
-
     const email = await createEmail(message);
+    const attachments = email.attachments.filter((attachment) => attachment.contentDisposition === "attachment");
 
     res.render("email", {
       subject: email.subject,
       to: email.to,
       htmlContent: email.html,
+      attachments,
+      messageId: req.params.id,
     });
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get("/emails/:id/attachments/:attachmentId", async (req, res, next) => {
+  try {
+    const messages = await fetchMessages();
+    const message = messages[req.params.id];
+    const email = await createEmail(message);
+    const attachment = email.attachments.find((attachment) => attachment.partId === req.params.attachmentId);
+
+    res.set({
+      "Content-Type": attachment.contentType,
+      "Content-Disposition": `inline; filename="${attachment.filename}"`,
+    });
+    res.send(attachment.content);
   } catch (err) {
     next(err);
   }
