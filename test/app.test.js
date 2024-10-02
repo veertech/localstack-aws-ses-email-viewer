@@ -60,6 +60,7 @@ describe("App Tests", () => {
               ToAddresses: ["jeff@aws.com"]
             },
             Body: {
+              text_part: "This is a test email",
               html_part: null,
             },
           },
