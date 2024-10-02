@@ -24,12 +24,12 @@ html
     }
   body
     .container
-      | Subject line:&nbsp
+      ="Subject line: "
       span.subject-value #{subject} <br>
-      | To:&nbsp
+      ="To: "
       span.subject-value #{to} <br>
       if attachments.length > 0
-        | Attachments:&nbsp
+        ="Attachments: "
         each att in attachments
           a.attachment-link(href='/emails/' + messageId + '/attachments/' + att.partId, target="_blank")= att.filename
           =" "
