@@ -48,6 +48,8 @@ html
           each column in extraColumns
             th= column.name
           th To
+          th CC
+          th BCC
           th Subject
           th
           th
@@ -62,6 +64,8 @@ html
                   if logo
                     img(src=`data:image/png;base64,${logo.toString('base64')}`, height="24px", alt="Logo")
             td= message.to
+            td= message.cc
+            td= message.bcc
             td= message.subject
             td
               a(href='/emails/' + message.id) View

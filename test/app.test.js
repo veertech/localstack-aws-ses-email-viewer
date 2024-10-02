@@ -43,6 +43,19 @@ describe("App Tests", () => {
               html_part: null,
             },
           },
+          {
+            Timestamp: Date.now(),
+            Subject: "Test email CC and BCC only",
+            Destination: {
+              ToAddresses: [],
+              CcAddresses: ['cc@example.com'],
+              BccAddresses: ['bcc@example.com']
+            },
+            Body: {
+              text_part: "This is a test email with only CC and BCC recipients",
+              html_part: null,
+            },
+          },
         ],
       });
   });
