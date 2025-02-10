@@ -10,7 +10,7 @@
   },
   "devDependencies": {
     "jest": "^29.7.0",
-    "nock": "^14.0.0",
+    "nock": "^14.0.1",
     "prettier": "^3.4.2",
     "supertest": "^7.0.0"
   },
