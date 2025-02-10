@@ -108,6 +108,27 @@ app.get("/emails/:id/download", async (req, res, next) => {
   }
 });
 
+app.get("/emails/:id/delete", async (req, res, next) => {
+  try {
+    const messageId = req.params.id; // The ID from the URL path
+
+    // Send a DELETE request to the API URL with the msg SES ID as a query parameter
+    const response = await fetch(`${apiUrl}?id=${messageId}`, {
+      method: 'DELETE',
+    });
+
+    // Log the response status and body for debugging
+    const responseBody = await response.text();
+    if (response.ok) {
+      // If the deletion is successful, redirect back to the "/"
+      res.redirect('/');
+    } else {
+      res.status(response.status).send(`Failed to delete email: ${responseBody}`);    }
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.use((err, _req, res, _next) => {
   console.error(err.stack);
   res.status(500).send("Something broke!");
@@ -131,6 +152,7 @@ async function createEmail(message) {
       html: parsed.html,
       attachments: parsed.attachments,
       isDownloadable: true,
+      sesid: message.Id,
     };
   }
 
@@ -143,6 +165,7 @@ async function createEmail(message) {
     html: message.Body.html_part ?? message.Body.text_part,
     attachments: [],
     isDownloadable: false,
+    sesid: message.Id,
   };
 }
 
