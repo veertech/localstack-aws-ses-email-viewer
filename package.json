@@ -4,7 +4,7 @@
   "homepage": "https://github.com/veertech/localstack-aws-ses-email-viewer",
   "dependencies": {
     "express": "^5.1.0",
-    "mailparser": "^3.7.2",
+    "mailparser": "^3.7.3",
     "node-fetch": "^3.3.2",
     "pug": "^3.0.3"
   },
