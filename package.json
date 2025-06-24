@@ -11,7 +11,7 @@
   "devDependencies": {
     "jest": "^30.0.2",
     "nock": "^14.0.5",
-    "prettier": "^3.5.3",
+    "prettier": "^3.6.0",
     "supertest": "^7.1.1"
   },
   "scripts": {
