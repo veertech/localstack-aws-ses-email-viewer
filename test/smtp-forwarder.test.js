@@ -2,6 +2,16 @@ import { SMTPForwarder } from '../lib/smtp-forwarder.js';
 import { jest } from '@jest/globals';
 
 describe('SMTPForwarder', () => {
+  // Suppress console logs during tests
+  beforeAll(() => {
+    jest.spyOn(console, 'log').mockImplementation(() => {});
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
+  afterAll(() => {
+    console.log.mockRestore();
+    console.error.mockRestore();
+  });
   describe('constructor', () => {
     it('should create disabled forwarder by default', () => {
       const forwarder = new SMTPForwarder();
@@ -227,6 +237,41 @@ describe('SMTPForwarder', () => {
 
       const recipients = forwarder._extractRecipients(parsed);
       expect(recipients).toEqual([]);
+    });
+
+    it('should handle malformed recipient fields without value property', () => {
+      const forwarder = new SMTPForwarder();
+      const parsed = {
+        to: {},  // Missing value property
+        cc: { value: [{ address: 'cc@example.com' }] },
+        bcc: null  // Null field
+      };
+
+      const recipients = forwarder._extractRecipients(parsed);
+      expect(recipients).toEqual(['cc@example.com']);
+    });
+
+    it('should handle undefined value properties', () => {
+      const forwarder = new SMTPForwarder();
+      const parsed = {
+        to: { value: undefined },
+        cc: { value: null }
+      };
+
+      const recipients = forwarder._extractRecipients(parsed);
+      expect(recipients).toEqual([]);
+    });
+
+    it('should handle non-array value properties', () => {
+      const forwarder = new SMTPForwarder();
+      const parsed = {
+        to: { value: 'not-an-array' },  // String instead of array
+        cc: { value: [{ address: 'cc@example.com' }] },
+        bcc: { value: 123 }  // Number instead of array
+      };
+
+      const recipients = forwarder._extractRecipients(parsed);
+      expect(recipients).toEqual(['cc@example.com']);
     });
   });
 });
