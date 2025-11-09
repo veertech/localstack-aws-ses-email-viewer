@@ -1,12 +1,16 @@
 import express from "express";
 import fetch from "node-fetch";
 import mailparser from "mailparser";
+import { createFromEnv } from "./lib/smtp-forwarder.js";
 
 const simpleParser = mailparser.simpleParser;
 
 const app = express();
 
 const apiUrl = `${process.env.LOCALSTACK_HOST || 'http://localhost:4566'}/_aws/ses`;
+
+// Initialize SMTP forwarder from environment variables
+const smtpForwarder = createFromEnv();
 
 app.set("view engine", "pug");
 
@@ -116,7 +120,12 @@ app.use((err, _req, res, _next) => {
 async function fetchMessages() {
   const response = await fetch(apiUrl);
   const data = await response.json();
-  return data["messages"];
+  const messages = data["messages"];
+
+  // Forward new messages to SMTP if enabled
+  await smtpForwarder.forwardMessages(messages);
+
+  return messages;
 }
 
 async function createEmail(message) {
