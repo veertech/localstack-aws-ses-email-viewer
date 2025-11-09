@@ -1,5 +1,9 @@
 import supertest from "supertest";
 import nock from "nock";
+
+// Disable SMTP forwarding for tests via environment variable
+process.env.SMTP_FORWARD_ENABLED = 'false';
+
 import app from "../app.js";
 
 const generateMockEml = () => {
