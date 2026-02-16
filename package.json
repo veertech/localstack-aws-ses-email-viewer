@@ -6,7 +6,7 @@
     "express": "^5.2.1",
     "mailparser": "^3.9.3",
     "node-fetch": "^3.3.2",
-    "nodemailer": "^7.0.12",
+    "nodemailer": "^8.0.1",
     "pug": "^3.0.3"
   },
   "devDependencies": {
