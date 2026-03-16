@@ -7,7 +7,7 @@
     "mailparser": "^3.9.4",
     "node-fetch": "^3.3.2",
     "nodemailer": "^8.0.1",
-    "pug": "^3.0.3"
+    "pug": "^3.0.4"
   },
   "devDependencies": {
     "jest": "^30.3.0",
