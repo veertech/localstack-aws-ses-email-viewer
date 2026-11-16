@@ -13,7 +13,7 @@
     "jest": "^30.5.2",
     "nock": "^14.0.17",
     "prettier": "^3.10.1",
-    "supertest": "^7.3.1"
+    "supertest": "^7.3.2"
   },
   "scripts": {
     "test": "NODE_OPTIONS=--experimental-vm-modules jest"
